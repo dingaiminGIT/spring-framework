@@ -1,11 +1,11 @@
 /*
- * Copyright 2002-2017 the original author or authors.
+ * Copyright 2002-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -42,7 +42,7 @@ public abstract class SqlParameterSourceUtils {
 	 * @return an array of {@link SqlParameterSource}
 	 * @see MapSqlParameterSource
 	 * @see BeanPropertySqlParameterSource
-	 * @see NamedParameterJdbcTemplate#batchUpdate(String, SqlParameterSource[]))
+	 * @see NamedParameterJdbcTemplate#batchUpdate(String, SqlParameterSource[])
 	 */
 	@SuppressWarnings("unchecked")
 	public static SqlParameterSource[] createBatch(Object... candidates) {
@@ -58,7 +58,7 @@ public abstract class SqlParameterSourceUtils {
 	 * @since 5.0.2
 	 * @see MapSqlParameterSource
 	 * @see BeanPropertySqlParameterSource
-	 * @see NamedParameterJdbcTemplate#batchUpdate(String, SqlParameterSource[]))
+	 * @see NamedParameterJdbcTemplate#batchUpdate(String, SqlParameterSource[])
 	 */
 	@SuppressWarnings("unchecked")
 	public static SqlParameterSource[] createBatch(Collection<?> candidates) {
@@ -117,14 +117,9 @@ public abstract class SqlParameterSourceUtils {
 	 */
 	public static Map<String, String> extractCaseInsensitiveParameterNames(SqlParameterSource parameterSource) {
 		Map<String, String> caseInsensitiveParameterNames = new HashMap<>();
-		if (parameterSource instanceof BeanPropertySqlParameterSource) {
-			String[] propertyNames = ((BeanPropertySqlParameterSource) parameterSource).getReadablePropertyNames();
-			for (String name : propertyNames) {
-				caseInsensitiveParameterNames.put(name.toLowerCase(), name);
-			}
-		}
-		else if (parameterSource instanceof MapSqlParameterSource) {
-			for (String name : ((MapSqlParameterSource) parameterSource).getValues().keySet()) {
+		String[] paramNames = parameterSource.getParameterNames();
+		if (paramNames != null) {
+			for (String name : paramNames) {
 				caseInsensitiveParameterNames.put(name.toLowerCase(), name);
 			}
 		}

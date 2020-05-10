@@ -1,11 +1,11 @@
 /*
- * Copyright 2002-2017 the original author or authors.
+ * Copyright 2002-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,8 +16,12 @@
 
 package org.springframework.transaction.interceptor;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import org.springframework.lang.Nullable;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.springframework.util.StringUtils;
 
 /**
  * Spring's common transaction attribute implementation.
@@ -25,6 +29,7 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
+ * @author Mark Paluch
  * @since 16.03.2003
  */
 @SuppressWarnings("serial")
@@ -35,6 +40,8 @@ public class DefaultTransactionAttribute extends DefaultTransactionDefinition im
 
 	@Nullable
 	private String descriptor;
+
+	private Collection<String> labels = Collections.emptyList();
 
 
 	/**
@@ -82,7 +89,7 @@ public class DefaultTransactionAttribute extends DefaultTransactionDefinition im
 	 * to process this specific transaction.
 	 * @since 3.0
 	 */
-	public void setQualifier(String qualifier) {
+	public void setQualifier(@Nullable String qualifier) {
 		this.qualifier = qualifier;
 	}
 
@@ -94,6 +101,21 @@ public class DefaultTransactionAttribute extends DefaultTransactionDefinition im
 	@Nullable
 	public String getQualifier() {
 		return this.qualifier;
+	}
+
+	/**
+	 * Associate one or more labels with this transaction attribute.
+	 * <p>This may be used for applying specific transactional behavior
+	 * or follow a purely descriptive nature.
+	 * @since 5.3
+	 */
+	public void setLabels(Collection<String> labels) {
+		this.labels = labels;
+	}
+
+	@Override
+	public Collection<String> getLabels() {
+		return this.labels;
 	}
 
 	/**
@@ -141,8 +163,11 @@ public class DefaultTransactionAttribute extends DefaultTransactionDefinition im
 	 */
 	protected final StringBuilder getAttributeDescription() {
 		StringBuilder result = getDefinitionDescription();
-		if (this.qualifier != null) {
+		if (StringUtils.hasText(this.qualifier)) {
 			result.append("; '").append(this.qualifier).append("'");
+		}
+		if (!this.labels.isEmpty()) {
+			result.append("; ").append(this.labels);
 		}
 		return result;
 	}
